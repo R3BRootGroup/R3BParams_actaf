@@ -1,0 +1,5 @@
+macros/exp/unpack/*.root
+macros/sim/*.root
+core*
+*.lmd
+input

@@ -1,0 +1,19 @@
+-------------------------------------------------------------------
+
+     =========================================================
+     Twim - Parameter containers
+     =========================================================
+
+                      Category History file
+                      ---------------------
+This file should be used by R3BRoot developers and category coordinators
+to briefly summarize all major modifications introduced in the parameters
+and keep track of all category-tags.
+
+     ----------------------------------------------------------
+     * Reverse chronological order (last date on top), please *
+     ----------------------------------------------------------
+
+
+June 11, 2021 J.L. Rodriguez
+- Created default parameter file.

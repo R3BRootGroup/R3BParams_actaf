@@ -1,0 +1,19 @@
+/////////////////////////////////////////////////////////////////////
+//      Naming Convention for Parameter Files and Folders          //
+/////////////////////////////////////////////////////////////////////
+
+
+detectorCalibParams_V$.par ($=version number)
+detectorMappingParams_V$.par
+detectorGeoParams_V$.par
+detectorHitParams_V$.par
+
+
+/////////////////////////////////////////////////////////////////////
+//                          Metafile                               //
+/////////////////////////////////////////////////////////////////////
+
+
+#RunID #ExpRun #TimeStamp #califaMapVersion #califaCalVersion #califaGeoVersion #gladFieldVersion #mwpc0CalVersion #fMwpc1CalVersion #mwpc2CalVersion #mwpc3CalVersion
+(on the same line )  #mwpc0GeoVersion #fMwpc1GeoVersion #mwpc2GeoVersion #mwpc3GeoVersion #trimCalVersion #trimHitVersion #trimGeoVersion #twimCalVersion #twimHitVersion
+(on the same line )  #twimGeoVersion #targetGeoVersion #sciCalVersion #tofCalVersion #tofHitVersion #tofGeoVersion #amsMapVersion #amsCalVersion

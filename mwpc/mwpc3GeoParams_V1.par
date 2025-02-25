@@ -1,0 +1,22 @@
+##############################################################################
+##############################################################################
+# Class:   Mwpc3GeoPar
+# Context: GeometryParameterContext
+##############################################################################
+[Mwpc3GeoPar]
+//----------------------------------------------------------------------------
+PositionX: Double_t -163.81
+PositionY: Double_t 0.
+PositionZ: Double_t 578.97
+RotationX: Double_t 0.
+RotationY: Double_t -20.
+RotationZ: Double_t 0.
+DimensionX: Double_t 90.
+DimensionY: Double_t 60.
+DimensionZ: Double_t 5.0
+SigmaX: Double_t 0.0112
+SigmaY: Double_t 0.05
+Z: Double_t 14.
+A: Double_t 28.0855
+Density: Double_t 1.0
+IonisationEnergy: Double_t 57.4e-6
