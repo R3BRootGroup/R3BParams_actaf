@@ -46,8 +46,7 @@ void actaf_online(const Int_t fRunId = 1, const Int_t nev = -1) {
 
   // Online server configuration --------------------------
   const Int_t refresh = 1; // Refresh rate for online histograms
-  const Int_t port =
-      8888; // Port number for the online visualization, example lxgXXXX:8888
+  const Int_t port = 8888; // Port number for the online visualization
   const Int_t fExpId = 2025;
 
   // Create online run ------------------------------------
