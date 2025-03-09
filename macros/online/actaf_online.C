@@ -32,14 +32,12 @@ void actaf_online(const Int_t fRunId = 1, const Int_t nev = -1) {
   TString ntuple_options = "RAW"; // For stitched data
   // TString ntuple_options = "RAW,time-stitch=1000"; // For no stitched data
   TString ucesb_dir = getenv("UCESB_DIR");
-  // TString ucesb_dir = "/nucl_lustre/pablogrusell/amber_TPC_DAQ/bl/ucesb";
   TString filename, outputFilename, upexps_dir, ucesb_path;
 
   filename = "/nucl_lustre/pablogrusell/amber_TPC_DAQ/data/20230925_amber/"
              "stitched/eth001_0000_stitched.lmd";
   outputFilename = "unpacked_data" + oss.str() + ".root";
-  upexps_dir = "/nucl_lustre/pablogrusell/amber_TPC_DAQ/bl/upexps"; // for local
-                                                                    // computers
+  upexps_dir = "/nucl_lustre/amber/upexps"; // for local computers
   ucesb_path =
       upexps_dir + "/2023_actar/actar --allow-errors --input-buffer=100Mi";
   ucesb_path.ReplaceAll("//", "/");
@@ -54,7 +52,6 @@ void actaf_online(const Int_t fRunId = 1, const Int_t nev = -1) {
   EvntHeader->SetExpId(fExpId);
   auto *run = new FairRunOnline();
   run->SetEventHeader(EvntHeader);
-
   run->SetSink(new FairRootFileSink(outputFilename));
   run->ActivateHttpServer(refresh, port);
 
@@ -77,6 +74,12 @@ void actaf_online(const Int_t fRunId = 1, const Int_t nev = -1) {
   run->SetSource(source);
   run->SetRunId(fRunId);
   run->SetSink(new FairRootFileSink(outputFilename));
+
+  // Runtime data base ------------------------------------
+
+  // Create analysis task ------------------------------------------------------
+  auto *actafonline = new R3BActafOnlineSpectra();
+  run->AddTask(actafonline);
 
   // Initialize -------------------------------------------
   run->Init();
