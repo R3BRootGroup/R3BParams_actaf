@@ -1,5 +1,7 @@
-macros/exp/unpack/*.root
+macros/exp/*.root
 macros/sim/*.root
 core*
+*.o
 *.lmd
-input
+*allParams_*
+*all_*
