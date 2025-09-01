@@ -1,5 +1,6 @@
 macros/exp/*.root
 macros/sim/*.root
+macros/online/*.root
 core*
 *.o
 *.lmd

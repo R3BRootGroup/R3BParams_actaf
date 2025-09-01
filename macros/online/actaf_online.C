@@ -9,7 +9,7 @@
 
 typedef struct EXT_STR_h101_t {
   EXT_STR_h101_unpack_t unpack;
-  EXT_STR_h101_ACTAF_onion_t actaf;
+  EXT_STR_h101_ACTAF2023_onion_t actaf;
 
 } EXT_STR_h101;
 
@@ -29,13 +29,14 @@ void actaf_online(const Int_t fRunId = 1, const Int_t nev = -1) {
 
   // NumSoiSci, file names and paths -----------------------------
   TString dir = gSystem->Getenv("VMCWORKDIR");
+  TString pardir = gSystem->Getenv("ACTAFPARAMDIR");
   TString ntuple_options = "RAW"; // For stitched data
   // TString ntuple_options = "RAW,time-stitch=1000"; // For no stitched data
   TString ucesb_dir = getenv("UCESB_DIR");
   TString filename, outputFilename, upexps_dir, ucesb_path;
 
-  filename = "/nucl_lustre/pablogrusell/amber_TPC_DAQ/data/20230925_amber/"
-             "stitched/eth001_0000_stitched.lmd";
+  filename = "/nucl_lustre/amber/lmd_2023/eth001_0000_stitched.lmd";
+
   outputFilename = "unpacked_data" + oss.str() + ".root";
   upexps_dir = "/nucl_lustre/amber/upexps"; // for local computers
   ucesb_path =
@@ -67,7 +68,7 @@ void actaf_online(const Int_t fRunId = 1, const Int_t nev = -1) {
 
   if (fActaf) {
     source->AddReader(
-        new R3BActafReader((EXT_STR_h101_ACTAF_onion *)&ucesb_struct.actaf,
+        new R3BActafReader((EXT_STR_h101_ACTAF2023_onion *)&ucesb_struct.actaf,
                            offsetof(EXT_STR_h101, actaf)));
   }
 
@@ -76,6 +77,20 @@ void actaf_online(const Int_t fRunId = 1, const Int_t nev = -1) {
   run->SetSink(new FairRootFileSink(outputFilename));
 
   // Runtime data base ------------------------------------
+  auto *rtdb = run->GetRuntimeDb();
+  auto *parRoot = new FairParRootFileIo(true);
+  auto *parAscii = new FairParAsciiFileIo();
+
+  auto *parListRoot = new TList();
+  // parListRoot->Add(new TObjString(pardir + "/actaf/actaf_cal_v1.root"));
+  parRoot->open(parListRoot);
+  rtdb->setFirstInput(parRoot);
+
+  auto *parListAscii = new TList();
+  // parListAscii->Add(new TObjString(pardir + "/actaf/actaf_mapping_v1.par"));
+  parAscii->open(parListAscii);
+  rtdb->setSecondInput(parAscii);
+  rtdb->print();
 
   // Create analysis task ------------------------------------------------------
   auto *actafonline = new R3BActafOnlineSpectra();
@@ -89,12 +104,12 @@ void actaf_online(const Int_t fRunId = 1, const Int_t nev = -1) {
 
   // Finish -----------------------------------------------
   timer.Stop();
-  Double_t rtime = timer.RealTime();
-  Double_t ctime = timer.CpuTime();
+  Double_t rtime = timer.RealTime() / 60.;
+  Double_t ctime = timer.CpuTime() / 60.;
   std::cout << std::endl << std::endl;
   std::cout << "Macro finished succesfully." << std::endl;
   std::cout << "Output file is " << outputFilename << std::endl;
-  std::cout << "Real time " << rtime << " s, CPU time " << ctime << " s"
+  std::cout << "Real time " << rtime << " min, CPU time " << ctime << " min"
             << std::endl
             << std::endl;
 }
