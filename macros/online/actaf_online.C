@@ -9,7 +9,8 @@
 
 typedef struct EXT_STR_h101_t {
   EXT_STR_h101_unpack_t unpack;
-  EXT_STR_h101_ACTAF2023_onion_t actaf;
+  EXT_STR_h101_ACTAF2025_onion_t actaf;
+  EXT_STR_h101_AMBERTIMETAG_onion_t timetag;
 
 } EXT_STR_h101;
 
@@ -35,12 +36,18 @@ void actaf_online(const Int_t fRunId = 1, const Int_t nev = -1) {
   TString ucesb_dir = getenv("UCESB_DIR");
   TString filename, outputFilename, upexps_dir, ucesb_path;
 
-  filename = "/nucl_lustre/amber/lmd_2023/eth001_0000_stitched.lmd";
+  // filename = "/nucl_lustre/amber/lmd_2023/eth001_0000_stitched.lmd";
+
+  filename = "/nucl_lustre/amber/lmd_2025/run0002_0000_st.lmd";
 
   outputFilename = "unpacked_data" + oss.str() + ".root";
-  upexps_dir = "/nucl_lustre/amber/upexps"; // for local computers
-  ucesb_path =
-      upexps_dir + "/2023_actar/actar --allow-errors --input-buffer=100Mi";
+
+  // upexps_dir = "/nucl_lustre/amber/upexps/2023_actar/"; // for local
+  // computers ucesb_path = upexps_dir + "/actar --allow-errors
+  // --input-buffer=100Mi";
+
+  upexps_dir = "/nucl_lustre/amber/actaf_upexps/"; // for local computers
+  ucesb_path = upexps_dir + "actaf --allow-errors --input-buffer=100Mi";
   ucesb_path.ReplaceAll("//", "/");
 
   // Online server configuration --------------------------
@@ -67,9 +74,16 @@ void actaf_online(const Int_t fRunId = 1, const Int_t nev = -1) {
                                         offsetof(EXT_STR_h101, unpack)));
 
   if (fActaf) {
-    source->AddReader(
-        new R3BActafReader((EXT_STR_h101_ACTAF2023_onion *)&ucesb_struct.actaf,
-                           offsetof(EXT_STR_h101, actaf)));
+    auto actafreader =
+        new R3BActafReader((EXT_STR_h101_ACTAF2025_onion *)&ucesb_struct.actaf,
+                           offsetof(EXT_STR_h101, actaf));
+    // actafreader->SetVersion(UnpackerVersion::v2023);
+
+    auto actafreader =
+        new R3BActafReader((EXT_STR_h101_ACTAF2025_onion *)&ucesb_struct.actaf,
+                           offsetof(EXT_STR_h101, actaf));
+    actafreader->SetVersion(UnpackerVersion::v2025);
+    source->AddReader(actafreader);
   }
 
   run->SetSource(source);
