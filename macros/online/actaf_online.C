@@ -75,12 +75,10 @@ void actaf_online(const Int_t fRunId = 1, const Int_t nev = -1) {
     //auto actafreader =
     //    new R3BActafReader((EXT_STR_h101_ACTAF2025_onion *)&ucesb_struct.actaf,
     //                       offsetof(EXT_STR_h101, actaf));
-    // actafreader->SetVersion(UnpackerVersion::v2023);
 
     auto actafreader =
         new R3BActafReader((EXT_STR_h101_ACTAF2025_onion *)&ucesb_struct.actaf,
                            offsetof(EXT_STR_h101, actaf));
-    actafreader->SetVersion(UnpackerVersion::v2025);
     source->AddReader(actafreader);
   }
 
