@@ -10,8 +10,6 @@
 typedef struct EXT_STR_h101_t {
   EXT_STR_h101_unpack_t unpack;
   EXT_STR_h101_ACTAF2025_onion_t actaf;
-  EXT_STR_h101_AMBERTIMETAG_onion_t timetag;
-
 } EXT_STR_h101;
 
 void actaf_online(const Int_t fRunId = 1, const Int_t nev = -1) {
@@ -74,9 +72,9 @@ void actaf_online(const Int_t fRunId = 1, const Int_t nev = -1) {
                                         offsetof(EXT_STR_h101, unpack)));
 
   if (fActaf) {
-    auto actafreader =
-        new R3BActafReader((EXT_STR_h101_ACTAF2025_onion *)&ucesb_struct.actaf,
-                           offsetof(EXT_STR_h101, actaf));
+    //auto actafreader =
+    //    new R3BActafReader((EXT_STR_h101_ACTAF2025_onion *)&ucesb_struct.actaf,
+    //                       offsetof(EXT_STR_h101, actaf));
     // actafreader->SetVersion(UnpackerVersion::v2023);
 
     auto actafreader =
