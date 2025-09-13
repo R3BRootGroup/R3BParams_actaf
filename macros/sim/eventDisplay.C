@@ -14,5 +14,5 @@ void eventDisplay() {
 
   fMan->AddTask(Track);
   fMan->Init();
-  gEve->GetDefaultGLViewer()->SetClearColor(kOrange - 4);
+  gEve->GetDefaultGLViewer()->SetClearColor(kOrange);
 }
