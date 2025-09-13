@@ -6,3 +6,4 @@
 //----------------------------------------------------------------------------
 GeoVersionPar:  Int_t  2025 
 NbPadsPar:  Int_t  128 
+NbFADCModulesPar: Int_t  8

@@ -97,7 +97,7 @@ void actaf_online(const Int_t fRunId = 1, const Int_t nev = -1) {
   rtdb->setFirstInput(parRoot);
 
   auto *parListAscii = new TList();
-  // parListAscii->Add(new TObjString(pardir + "/actaf/actaf_mapping_v1.par"));
+  parListAscii->Add(new TObjString(pardir + "/actaf/actaf_mapping_v1.par"));
   parAscii->open(parListAscii);
   rtdb->setSecondInput(parAscii);
   rtdb->print();
