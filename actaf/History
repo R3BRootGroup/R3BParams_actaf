@@ -15,6 +15,9 @@ and keep track of all category-tags.
      ----------------------------------------------------------
 
 September 13, 2025 J.L. Rodriguez
+- Added mapping file v2 with the mapping for the first AMBER experiment at CERN.
+
+September 11, 2025 J.L. Rodriguez
 - Added mapping file v1 with default parameters.
 
 March 17, 2025 J.L. Rodriguez
