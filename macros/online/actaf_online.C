@@ -7,119 +7,118 @@
  *
  */
 
-typedef struct EXT_STR_h101_t {
-  EXT_STR_h101_unpack_t unpack;
-  EXT_STR_h101_ACTAF2025_onion_t actaf;
+typedef struct EXT_STR_h101_t
+{
+    EXT_STR_h101_unpack_t unpack;
+    EXT_STR_h101_ACTAF2025_onion_t actaf;
 } EXT_STR_h101;
 
-void actaf_online(const Int_t fRunId = 1, const Int_t nev = -1) {
-  TStopwatch timer;
-  timer.Start();
+void actaf_online(const Int_t fRunId = 1, const Int_t nev = -1)
+{
+    TStopwatch timer;
+    timer.Start();
 
-  FairLogger::GetLogger()->SetLogScreenLevel("info");
-  FairLogger::GetLogger()->SetColoredLog(true);
+    FairLogger::GetLogger()->SetLogScreenLevel("info");
+    FairLogger::GetLogger()->SetColoredLog(true);
 
-  auto t = std::time(nullptr);
-  auto tm = *std::localtime(&t);
-  std::ostringstream oss;
-  oss << std::put_time(&tm, "%Y%m%d_%H%M%S");
+    auto t = std::time(nullptr);
+    auto tm = *std::localtime(&t);
+    std::ostringstream oss;
+    oss << std::put_time(&tm, "%Y%m%d_%H%M%S");
 
-  Bool_t fActaf = true;
+    Bool_t fActaf = true;
 
-  // NumSoiSci, file names and paths -----------------------------
-  TString dir = gSystem->Getenv("VMCWORKDIR");
-  TString pardir = gSystem->Getenv("ACTAFPARAMDIR");
-  TString ntuple_options = "RAW"; // For stitched data
-  // TString ntuple_options = "RAW,time-stitch=1000"; // For no stitched data
-  TString ucesb_dir = getenv("UCESB_DIR");
-  TString filename, outputFilename, upexps_dir, ucesb_path;
+    // NumSoiSci, file names and paths -----------------------------
+    TString dir = gSystem->Getenv("VMCWORKDIR");
+    TString pardir = gSystem->Getenv("ACTAFPARAMDIR");
+    TString ntuple_options = "RAW"; // For stitched data
+    // TString ntuple_options = "RAW,time-stitch=1000"; // For no stitched data
+    TString ucesb_dir = getenv("UCESB_DIR");
+    TString filename, outputFilename, upexps_dir, ucesb_path;
 
-  // filename = "/nucl_lustre/amber/lmd_2023/eth001_0000_stitched.lmd";
+    // filename = "/nucl_lustre/amber/lmd_2023/eth001_0000_stitched.lmd";
 
-  filename = "/nucl_lustre/amber/lmd_2025/run0002_0000_st.lmd";
+    filename = "/nucl_lustre/amber/lmd_2025/run0002_0000_st.lmd";
 
-  outputFilename = "unpacked_data" + oss.str() + ".root";
+    outputFilename = "unpacked_data" + oss.str() + ".root";
 
-  // upexps_dir = "/nucl_lustre/amber/upexps/2023_actar/"; // for local
-  // computers ucesb_path = upexps_dir + "/actar --allow-errors
-  // --input-buffer=100Mi";
+    // upexps_dir = "/nucl_lustre/amber/upexps/2023_actar/"; // for local
+    // computers ucesb_path = upexps_dir + "/actar --allow-errors
+    // --input-buffer=100Mi";
 
-  upexps_dir = "/nucl_lustre/amber/actaf_upexps/"; // for local computers
-  ucesb_path = upexps_dir + "actaf --allow-errors --input-buffer=100Mi";
-  ucesb_path.ReplaceAll("//", "/");
+    upexps_dir = "/nucl_lustre/amber/actaf_upexps/"; // for local computers
+    ucesb_path = upexps_dir + "actaf --allow-errors --input-buffer=100Mi";
+    ucesb_path.ReplaceAll("//", "/");
 
-  // Online server configuration --------------------------
-  const Int_t refresh = 1; // Refresh rate for online histograms
-  const Int_t port = 8888; // Port number for the online visualization
-  const Int_t fExpId = 2025;
+    // Online server configuration --------------------------
+    const Int_t refresh = 1; // Refresh rate for online histograms
+    const Int_t port = 8888; // Port number for the online visualization
+    const Int_t fExpId = 2025;
 
-  // Create online run ------------------------------------
-  auto *EvntHeader = new R3BEventHeader();
-  EvntHeader->SetExpId(fExpId);
-  auto *run = new FairRunOnline();
-  run->SetEventHeader(EvntHeader);
-  run->SetSink(new FairRootFileSink(outputFilename));
-  run->ActivateHttpServer(refresh, port);
+    // Create online run ------------------------------------
+    auto* EvntHeader = new R3BEventHeader();
+    EvntHeader->SetExpId(fExpId);
+    auto* run = new FairRunOnline();
+    run->SetEventHeader(EvntHeader);
+    run->SetSink(new FairRootFileSink(outputFilename));
+    run->ActivateHttpServer(refresh, port);
 
-  // Create source using ucesb for input ------------------
-  EXT_STR_h101 ucesb_struct;
+    // Create source using ucesb for input ------------------
+    EXT_STR_h101 ucesb_struct;
 
-  auto *source = new R3BUcesbSource(filename, ntuple_options, ucesb_path,
-                                    &ucesb_struct, sizeof(ucesb_struct));
-  source->SetMaxEvents(nev);
+    auto* source = new R3BUcesbSource(filename, ntuple_options, ucesb_path, &ucesb_struct, sizeof(ucesb_struct));
+    source->SetMaxEvents(nev);
 
-  source->AddReader(new R3BUnpackReader(&ucesb_struct.unpack,
-                                        offsetof(EXT_STR_h101, unpack)));
+    source->AddReader(new R3BUnpackReader(&ucesb_struct.unpack, offsetof(EXT_STR_h101, unpack)));
 
-  if (fActaf) {
-    //auto actafreader =
-    //    new R3BActafReader((EXT_STR_h101_ACTAF2025_onion *)&ucesb_struct.actaf,
-    //                       offsetof(EXT_STR_h101, actaf));
+    if (fActaf)
+    {
+        // auto actafreader =
+        //     new R3BActafReader((EXT_STR_h101_ACTAF2025_onion
+        //     *)&ucesb_struct.actaf,
+        //                        offsetof(EXT_STR_h101, actaf));
 
-    auto actafreader =
-        new R3BActafReader((EXT_STR_h101_ACTAF2025_onion *)&ucesb_struct.actaf,
-                           offsetof(EXT_STR_h101, actaf));
-    source->AddReader(actafreader);
-  }
+        auto actafreader =
+            new R3BActafReader((EXT_STR_h101_ACTAF2025_onion*)&ucesb_struct.actaf, offsetof(EXT_STR_h101, actaf));
+        source->AddReader(actafreader);
+    }
 
-  run->SetSource(source);
-  run->SetRunId(fRunId);
-  run->SetSink(new FairRootFileSink(outputFilename));
+    run->SetSource(source);
+    run->SetRunId(fRunId);
+    run->SetSink(new FairRootFileSink(outputFilename));
 
-  // Runtime data base ------------------------------------
-  auto *rtdb = run->GetRuntimeDb();
-  auto *parRoot = new FairParRootFileIo(true);
-  auto *parAscii = new FairParAsciiFileIo();
+    // Runtime data base ------------------------------------
+    auto* rtdb = run->GetRuntimeDb();
+    auto* parRoot = new FairParRootFileIo(true);
+    auto* parAscii = new FairParAsciiFileIo();
 
-  auto *parListRoot = new TList();
-  // parListRoot->Add(new TObjString(pardir + "/actaf/actaf_cal_v1.root"));
-  parRoot->open(parListRoot);
-  rtdb->setFirstInput(parRoot);
+    auto* parListRoot = new TList();
+    // parListRoot->Add(new TObjString(pardir + "/actaf/actaf_cal_v1.root"));
+    parRoot->open(parListRoot);
+    rtdb->setFirstInput(parRoot);
 
-  auto *parListAscii = new TList();
-  parListAscii->Add(new TObjString(pardir + "/actaf/actaf_mapping_v1.par"));
-  parAscii->open(parListAscii);
-  rtdb->setSecondInput(parAscii);
-  rtdb->print();
+    auto* parListAscii = new TList();
+    parListAscii->Add(new TObjString(pardir + "/actaf/actaf_mapping_v1.par"));
+    parAscii->open(parListAscii);
+    rtdb->setSecondInput(parAscii);
+    rtdb->print();
 
-  // Create analysis task ------------------------------------------------------
-  auto *actafonline = new R3BActafOnlineSpectra();
-  run->AddTask(actafonline);
+    // Create analysis task ------------------------------------------------------
+    auto* actafonline = new R3BActafOnlineSpectra();
+    run->AddTask(actafonline);
 
-  // Initialize -------------------------------------------
-  run->Init();
+    // Initialize -------------------------------------------
+    run->Init();
 
-  // Run --------------------------------------------------
-  run->Run((nev < 0) ? nev : 0, (nev < 0) ? 0 : nev);
+    // Run --------------------------------------------------
+    run->Run((nev < 0) ? nev : 0, (nev < 0) ? 0 : nev);
 
-  // Finish -----------------------------------------------
-  timer.Stop();
-  Double_t rtime = timer.RealTime() / 60.;
-  Double_t ctime = timer.CpuTime() / 60.;
-  std::cout << std::endl << std::endl;
-  std::cout << "Macro finished succesfully." << std::endl;
-  std::cout << "Output file is " << outputFilename << std::endl;
-  std::cout << "Real time " << rtime << " min, CPU time " << ctime << " min"
-            << std::endl
-            << std::endl;
+    // Finish -----------------------------------------------
+    timer.Stop();
+    Double_t rtime = timer.RealTime() / 60.;
+    Double_t ctime = timer.CpuTime() / 60.;
+    std::cout << std::endl << std::endl;
+    std::cout << "Macro finished succesfully." << std::endl;
+    std::cout << "Output file is " << outputFilename << std::endl;
+    std::cout << "Real time " << rtime << " min, CPU time " << ctime << " min" << std::endl << std::endl;
 }
