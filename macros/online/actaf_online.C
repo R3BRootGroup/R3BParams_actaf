@@ -14,7 +14,9 @@ typedef struct EXT_STR_h101_t
     EXT_STR_h101_ACTAF2025_onion_t actaf;
 } EXT_STR_h101;
 
-void actaf_online(const Int_t fRunId = 1, const Int_t nev = -1)
+void actaf_online(TString filename = "/nucl_lustre/amber/lmd_2025/run0002_0000_st.lmd",
+                  const Int_t fRunId = 1,
+                  const Int_t nev = -1)
 {
     TStopwatch timer;
     timer.Start();
@@ -30,25 +32,35 @@ void actaf_online(const Int_t fRunId = 1, const Int_t nev = -1)
     Bool_t fActaf = true;
 
     // NumSoiSci, file names and paths -----------------------------
-    TString dir = gSystem->Getenv("VMCWORKDIR");
-    TString pardir = gSystem->Getenv("ACTAFPARAMDIR");
+    TString pardir = gSystem->Getenv("PARAMDIR");
     TString ntuple_options = "RAW"; // For stitched data
     // TString ntuple_options = "RAW,time-stitch=1000"; // For no stitched data
-    TString ucesb_dir = getenv("UCESB_DIR");
-    TString filename, outputFilename, upexps_dir, ucesb_path;
+    TString outputFilename, ucesb_path;
 
-    // filename = "/nucl_lustre/amber/lmd_2023/eth001_0000_stitched.lmd";
+    // Path to the output root file  ---------------------------
+    const TString output_path = gSystem->Getenv("OUTROOTPATH");
+    if (output_path == "")
+    {
+        std::cout
+            << "OUTROOTPATH is not set, this defines the path for output ROOT files, example: export OUTROOTPATH=./"
+            << std::endl;
+        gApplication->Terminate();
+    }
+    std::cout << "Output Root file path: " << output_path << std::endl;
 
-    filename = "/nucl_lustre/amber/lmd_2025/run0002_0000_st.lmd";
+    outputFilename = output_path + "/unpacked_data" + oss.str() + ".root";
+    outputFilename.ReplaceAll("//", "/");
 
-    outputFilename = "unpacked_data" + oss.str() + ".root";
+    // Path to UPEXPS   ---------------------------------------
+    const TString upexps_dir = gSystem->Getenv("UPEXPS_DIR");
+    if (upexps_dir == "")
+    {
+        std::cout << "UPEXPS_DIR is not set, load the configuration file on your PC > source conf.sh" << std::endl;
+        gApplication->Terminate();
+    }
+    std::cout << "UPEXPS_DIR = " << upexps_dir << std::endl;
 
-    // upexps_dir = "/nucl_lustre/amber/upexps/2023_actar/"; // for local
-    // computers ucesb_path = upexps_dir + "/actar --allow-errors
-    // --input-buffer=100Mi";
-
-    upexps_dir = "/nucl_lustre/amber/actaf_upexps/"; // for local computers
-    ucesb_path = upexps_dir + "actaf --allow-errors --input-buffer=100Mi";
+    ucesb_path = upexps_dir + "/actaf --allow-errors --input-buffer=100Mi";
     ucesb_path.ReplaceAll("//", "/");
 
     // Online server configuration --------------------------
@@ -61,7 +73,6 @@ void actaf_online(const Int_t fRunId = 1, const Int_t nev = -1)
     EvntHeader->SetExpId(fExpId);
     auto* run = new FairRunOnline();
     run->SetEventHeader(EvntHeader);
-    run->SetSink(new FairRootFileSink(outputFilename));
     run->ActivateHttpServer(refresh, port);
 
     // Create source using ucesb for input ------------------
@@ -111,11 +122,11 @@ void actaf_online(const Int_t fRunId = 1, const Int_t nev = -1)
     // actafmap2cal->SetVelocity(0.28); // cm/ns
     actafmap2cal->SetOnline();
     run->AddTask(actafmap2cal);
-    
+
     auto* actafcal2hit = new R3BActafCal2Hit();
     actafcal2hit->SetOnline();
     run->AddTask(actafcal2hit);
-    
+
     auto* actafonline = new R3BActafOnlineSpectra();
     run->AddTask(actafonline);
 
