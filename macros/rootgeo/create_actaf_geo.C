@@ -148,7 +148,7 @@ void create_actaf_geo(const char* geoTag = "v25")
     // defining top volume
     top->AddNode(pWorld, 0, t0);
 
-    double anode_length = 20.;
+    double anode_length = 40.; // cm
 
     std::vector<TGeoTubeSeg*> rings = { new TGeoTubeSeg("Ring1_section",
                                                         2.0,               // rmin
@@ -173,7 +173,7 @@ void create_actaf_geo(const char* geoTag = "v25")
                                             "Ring8_section", 28.6, 30.9, anode_length / 2., 0., 360. / 6.) };
 
     std::vector<int> nb_pads_ring = { 12, 8, 8, 8, 8, 6, 7, 6 };
-    std::vector<int> offset_phi = { 0, 0, 15, 30, 0, 20, 0, 40 };
+    std::vector<int> offset_phi = { -30, 0, 15, 30, 0, 20, 0, 40 };
 
     auto* Section = new TGeoVolumeAssembly("Section");
 
@@ -182,57 +182,67 @@ void create_actaf_geo(const char* geoTag = "v25")
                              1.9,                // rmax
                              anode_length / 2.); // dz (half-length in z)
 
-    auto secinner1 = new TGeoVolume("Ring1_Pad1", cyl, pMed4);
+    auto secinner1 = new TGeoVolume("Ring1_Pad13", cyl, pMed4);
     secinner1->SetVisLeaves(kTRUE);
     secinner1->SetLineColor(34);
-    Section->AddNode(secinner1, 0, new TGeoCombiTrans(0., 0., -anode_length / 2. - 1, fRefRot));
 
-    int padval = 2;
-    for (int r = 0; r < 8; r++)
-    {
-        for (int s = 0; s < nb_pads_ring[r]; s++)
-        {
-            TString name;
-            name.Form("Ring%d_Pad%d", r + 1, padval);
-
-            auto section = new TGeoVolume(name.Data(), rings[r], pMed4);
-            section->SetVisLeaves(kTRUE);
-            section->SetLineColor(r + 1);
-
-            auto rot = new TGeoRotation();
-            rot->RotateZ(offset_phi[r] + s * 360. / nb_pads_ring[r]);
-
-            Section->AddNode(section, 0, new TGeoCombiTrans(0., 0., -anode_length / 2. - 1, rot));
-
-            padval++;
-        }
-    }
-
-    padval++;
-    for (int r = 0; r < 8; r++)
-    {
-        for (int s = 0; s < nb_pads_ring[r]; s++)
-        {
-            TString name;
-            name.Form("Ring%d_Pad%d", r + 1, padval);
-
-            auto section = new TGeoVolume(name.Data(), rings[r], pMed4);
-            section->SetVisLeaves(kTRUE);
-            section->SetLineColor(r + 1);
-
-            auto rot = new TGeoRotation();
-            rot->RotateZ(offset_phi[r] + s * 360. / nb_pads_ring[r]);
-
-            Section->AddNode(section, 0, new TGeoCombiTrans(0., 0., anode_length / 2. + 1., rot));
-
-            padval++;
-        }
-    }
-
-    auto secinner2 = new TGeoVolume("Ring1_Pad65", cyl, pMed4);
+    auto secinner2 = new TGeoVolume("Ring1_Pad77", cyl, pMed4);
     secinner2->SetVisLeaves(kTRUE);
     secinner2->SetLineColor(34);
-    Section->AddNode(secinner2, 0, new TGeoCombiTrans(0., 0., anode_length / 2. + 1, fRefRot));
+
+    int padval = 1;
+    for (int r = 0; r < 8; r++)
+    {
+        for (int s = 0; s < (r == 0 ? nb_pads_ring[r] + 1 : nb_pads_ring[r]); s++)
+        {
+            TString name;
+            name.Form("Ring%d_Pad%d", r + 1, padval);
+            if (padval != 13)
+            {
+                auto section = new TGeoVolume(name.Data(), rings[r], pMed4);
+                section->SetVisLeaves(kTRUE);
+                section->SetLineColor(r + 1);
+
+                auto rot = new TGeoRotation();
+                rot->RotateZ(offset_phi[r] + s * 360. / nb_pads_ring[r]);
+
+                Section->AddNode(section, 0, new TGeoCombiTrans(0., 0., -anode_length / 2. - 0.75, rot));
+            }
+            else
+            {
+                Section->AddNode(secinner1, 0, new TGeoCombiTrans(0., 0., -anode_length / 2. - 0.75, fRefRot));
+            }
+
+            padval++;
+        }
+    }
+
+    for (int r = 0; r < 8; r++)
+    {
+        for (int s = 0; s < (r == 0 ? nb_pads_ring[r] + 1 : nb_pads_ring[r]); s++)
+        {
+            TString name;
+            name.Form("Ring%d_Pad%d", r + 1, padval);
+            if (padval != 77)
+            {
+                auto section = new TGeoVolume(name.Data(), rings[r], pMed4);
+                section->SetVisLeaves(kTRUE);
+                section->SetLineColor(r + 1);
+
+                auto rot = new TGeoRotation();
+                rot->RotateZ(offset_phi[r] + s * 360. / nb_pads_ring[r]);
+                rot->RotateX(180.);
+
+                Section->AddNode(section, 0, new TGeoCombiTrans(0., 0., anode_length / 2. + 0.75, rot));
+            }
+            else
+            {
+                Section->AddNode(secinner2, 0, new TGeoCombiTrans(0., 0., anode_length / 2. + 0.75, fRefRot));
+            }
+
+            padval++;
+        }
+    }
 
     pWorld->AddNode(Section, 1, t0);
 
