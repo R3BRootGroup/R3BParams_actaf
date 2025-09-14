@@ -175,10 +175,19 @@ void create_actaf_geo(const char* geoTag = "v25")
     std::vector<int> nb_pads_ring = { 12, 8, 8, 8, 8, 6, 7, 6 };
     std::vector<int> offset_phi = { 0, 0, 15, 30, 0, 20, 0, 40 };
 
-    int padval = 2;
-
     auto* Section = new TGeoVolumeAssembly("Section");
 
+    auto* cyl = new TGeoTube("Ring1_inner",
+                             0,                  // rmin
+                             1.9,                // rmax
+                             anode_length / 2.); // dz (half-length in z)
+
+    auto secinner1 = new TGeoVolume("Ring1_Pad1", cyl, pMed4);
+    secinner1->SetVisLeaves(kTRUE);
+    secinner1->SetLineColor(34);
+    Section->AddNode(secinner1, 0, new TGeoCombiTrans(0., 0., -anode_length / 2. - 1, fRefRot));
+
+    int padval = 2;
     for (int r = 0; r < 8; r++)
     {
         for (int s = 0; s < nb_pads_ring[r]; s++)
@@ -220,6 +229,11 @@ void create_actaf_geo(const char* geoTag = "v25")
         }
     }
 
+    auto secinner2 = new TGeoVolume("Ring1_Pad65", cyl, pMed4);
+    secinner2->SetVisLeaves(kTRUE);
+    secinner2->SetLineColor(34);
+    Section->AddNode(secinner2, 0, new TGeoCombiTrans(0., 0., anode_length / 2. + 1, fRefRot));
+
     pWorld->AddNode(Section, 1, t0);
 
     // ---------------   Finish   -----------------------------------------------
@@ -230,10 +244,10 @@ void create_actaf_geo(const char* geoTag = "v25")
 
     TFile geoFile(geoFileName, "RECREATE");
     top->Write();
-    top->Draw("ogl");
+    // top->Draw("ogl");
     geoFile.Close();
     std::cout << "\033[34m Creating geometry:\033[0m "
               << "\033[33m" << geoFileName << " \033[0m" << std::endl;
     std::cout << "Macro finished successfully." << std::endl;
-    // gApplication->Terminate();
+    gApplication->Terminate();
 }
