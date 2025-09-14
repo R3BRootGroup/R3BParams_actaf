@@ -10,6 +10,7 @@
 typedef struct EXT_STR_h101_t
 {
     EXT_STR_h101_unpack_t unpack;
+    // EXT_STR_h101_ACTAF2023_onion_t actaf;
     EXT_STR_h101_ACTAF2025_onion_t actaf;
 } EXT_STR_h101;
 
@@ -74,12 +75,13 @@ void actaf_online(const Int_t fRunId = 1, const Int_t nev = -1)
     if (fActaf)
     {
         // auto actafreader =
-        //     new R3BActafReader((EXT_STR_h101_ACTAF2025_onion
+        //     new R3BActafReader((EXT_STR_h101_ACTAF2023_onion
         //     *)&ucesb_struct.actaf,
         //                        offsetof(EXT_STR_h101, actaf));
 
         auto actafreader =
             new R3BActafReader((EXT_STR_h101_ACTAF2025_onion*)&ucesb_struct.actaf, offsetof(EXT_STR_h101, actaf));
+        actafreader->SetOnline();
         source->AddReader(actafreader);
     }
 
@@ -98,12 +100,22 @@ void actaf_online(const Int_t fRunId = 1, const Int_t nev = -1)
     rtdb->setFirstInput(parRoot);
 
     auto* parListAscii = new TList();
-    parListAscii->Add(new TObjString(pardir + "/actaf/actaf_mapping_v1.par"));
+    parListAscii->Add(new TObjString(pardir + "/actaf/actaf_mapping_v2.par"));
     parAscii->open(parListAscii);
     rtdb->setSecondInput(parAscii);
     rtdb->print();
 
     // Create analysis task ------------------------------------------------------
+    auto* actafmap2cal = new R3BActafMapped2Cal();
+    // actafmap2cal->SetTimeConversion(51.44); // ns/bin
+    // actafmap2cal->SetVelocity(0.28); // cm/ns
+    actafmap2cal->SetOnline();
+    run->AddTask(actafmap2cal);
+    
+    auto* actafcal2hit = new R3BActafCal2Hit();
+    actafcal2hit->SetOnline();
+    run->AddTask(actafcal2hit);
+    
     auto* actafonline = new R3BActafOnlineSpectra();
     run->AddTask(actafonline);
 
