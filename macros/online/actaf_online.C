@@ -112,6 +112,7 @@ void actaf_online(TString filename = "/nucl_lustre/amber/lmd_2025/run0002_0000_s
 
     auto* parListAscii = new TList();
     parListAscii->Add(new TObjString(pardir + "/actaf/actaf_mapping_v2.par"));
+    parListAscii->Add(new TObjString(pardir + "/actaf/actafcal_v1.par"));
     parAscii->open(parListAscii);
     rtdb->setSecondInput(parAscii);
     rtdb->print();
