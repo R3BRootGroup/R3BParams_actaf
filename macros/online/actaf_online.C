@@ -14,7 +14,7 @@ typedef struct EXT_STR_h101_t
     EXT_STR_h101_ACTAF2025_onion_t actaf;
 } EXT_STR_h101;
 
-void actaf_online(TString filename = "/nucl_lustre/amber/lmd_2025/run0002_0000_st.lmd",
+void actaf_online(TString filename = "--stream=pcamtpc04:9003",
                   const Int_t fRunId = 1,
                   const Int_t nev = -1)
 {
@@ -60,12 +60,12 @@ void actaf_online(TString filename = "/nucl_lustre/amber/lmd_2025/run0002_0000_s
     }
     std::cout << "UPEXPS_DIR = " << upexps_dir << std::endl;
 
-    ucesb_path = upexps_dir + "/actaf --allow-errors --input-buffer=100Mi";
+    ucesb_path = upexps_dir + "/actaf --allow-errors --input-buffer=512Mi";
     ucesb_path.ReplaceAll("//", "/");
 
     // Online server configuration --------------------------
     const Int_t refresh = 1; // Refresh rate for online histograms
-    const Int_t port = 8888; // Port number for the online visualization
+    const Int_t online_port = 8888; // Port number for the online visualization
     const Int_t fExpId = 2025;
 
     // Create online run ------------------------------------
@@ -73,7 +73,7 @@ void actaf_online(TString filename = "/nucl_lustre/amber/lmd_2025/run0002_0000_s
     EvntHeader->SetExpId(fExpId);
     auto* run = new FairRunOnline();
     run->SetEventHeader(EvntHeader);
-    run->ActivateHttpServer(refresh, port);
+    run->ActivateHttpServer(refresh, online_port);
 
     // Create source using ucesb for input ------------------
     EXT_STR_h101 ucesb_struct;
@@ -133,6 +133,12 @@ void actaf_online(TString filename = "/nucl_lustre/amber/lmd_2025/run0002_0000_s
 
     // Initialize -------------------------------------------
     run->Init();
+    
+    // Information about portnumber and main data stream ----
+    std::cout << "\n\n" << std::endl;
+    std::cout << "Data stream is: " << filename << std::endl;
+    std::cout << "ACTAF online port server: " << online_port << std::endl;
+    std::cout << "\n\n" << std::endl;
 
     // Run --------------------------------------------------
     run->Run((nev < 0) ? nev : 0, (nev < 0) ? 0 : nev);
