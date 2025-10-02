@@ -14,9 +14,7 @@ typedef struct EXT_STR_h101_t
     EXT_STR_h101_ACTAF2025_onion_t actaf;
 } EXT_STR_h101;
 
-void actaf_online(TString filename = "--stream=pcamtpc04:9003",
-                  const Int_t fRunId = 1,
-                  const Int_t nev = -1)
+void actaf_online(TString filename = "--stream=pcamtpc04:9003", const Int_t fRunId = 1, const Int_t nev = -1)
 {
     TStopwatch timer;
     timer.Start();
@@ -64,7 +62,7 @@ void actaf_online(TString filename = "--stream=pcamtpc04:9003",
     ucesb_path.ReplaceAll("//", "/");
 
     // Online server configuration --------------------------
-    const Int_t refresh = 1; // Refresh rate for online histograms
+    const Int_t refresh = 1;        // Refresh rate for online histograms
     const Int_t online_port = 8888; // Port number for the online visualization
     const Int_t fExpId = 2025;
 
@@ -93,6 +91,7 @@ void actaf_online(TString filename = "--stream=pcamtpc04:9003",
         auto actafreader =
             new R3BActafReader((EXT_STR_h101_ACTAF2025_onion*)&ucesb_struct.actaf, offsetof(EXT_STR_h101, actaf));
         actafreader->SetOnline();
+        actafreader->SetFilter(true);
         source->AddReader(actafreader);
     }
 
@@ -133,7 +132,7 @@ void actaf_online(TString filename = "--stream=pcamtpc04:9003",
 
     // Initialize -------------------------------------------
     run->Init();
-    
+
     // Information about portnumber and main data stream ----
     std::cout << "\n\n" << std::endl;
     std::cout << "Data stream is: " << filename << std::endl;
