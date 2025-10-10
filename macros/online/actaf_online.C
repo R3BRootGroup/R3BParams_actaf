@@ -12,6 +12,7 @@ typedef struct EXT_STR_h101_t
     EXT_STR_h101_unpack_t unpack;
     // EXT_STR_h101_ACTAF2023_onion_t actaf;
     EXT_STR_h101_ACTAF2025_onion_t actaf;
+    EXT_STR_h101_WRACTAF_onion_t actafwr;
 } EXT_STR_h101;
 
 void actaf_online(TString filename = "--stream=pcamtpc04:9003", const Int_t fRunId = 1, const Int_t nev = -1)
@@ -93,6 +94,13 @@ void actaf_online(TString filename = "--stream=pcamtpc04:9003", const Int_t fRun
         actafreader->SetOnline();
         actafreader->SetFilter(true);
         source->AddReader(actafreader);
+
+        
+	std::vector<UInt_t> wrIds {100, 200, 300, 400, 500, 600, 700, 800, 900};
+	
+	auto actafwrreader = new R3BWhiterabbitActafReader((EXT_STR_h101_WRACTAF_onion*)&ucesb_struct.actafwr, offsetof(EXT_STR_h101, actafwr), wrIds);
+	actafwrreader->SetOnline();
+	source->AddReader(actafwrreader);
     }
 
     run->SetSource(source);
