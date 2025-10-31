@@ -92,7 +92,6 @@ void actaf_online(TString filename = "--stream=pcamtpc04:9003", const Int_t fRun
         auto actafreader =
             new R3BActafReader((EXT_STR_h101_ACTAF2025_onion*)&ucesb_struct.actaf, offsetof(EXT_STR_h101, actaf));
         actafreader->SetOnline();
-        actafreader->SetFilter(true);
         source->AddReader(actafreader);
 
         
