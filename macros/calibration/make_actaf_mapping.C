@@ -42,7 +42,7 @@ void make_actaf_mapping()
     auto rtdb = FairRuntimeDb::instance();
 
     auto parOut = new FairParAsciiFileIo();
-    parOut->open("actafmapping_v1.par", "out");
+    parOut->open("actafmapping_v2.par", "out");
     rtdb->setOutput(parOut);
 
     auto par = (R3BActafMappingPar*)(rtdb->getContainer("actafMappingPar"));
@@ -52,7 +52,7 @@ void make_actaf_mapping()
     for (int index = 0; index < 128; index++)
     {
         par->SetFADCModule(index, modval[index]);
-        par->SetFADCChannel(index, chval[index]);
+        par->SetFADCChannel(index, 17-chval[index]);
     }
 
     par->setChanged();

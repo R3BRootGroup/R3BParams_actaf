@@ -151,7 +151,7 @@ void create_actaf_geo(const char* geoTag = "v25")
     double anode_length = 40.; // cm
 
     std::vector<TGeoTubeSeg*> rings = { new TGeoTubeSeg("Ring1_section",
-                                                        2.0,               // rmin
+                                                        1.2,               // rmin
                                                         4.6,               // rmax
                                                         anode_length / 2., // dz (half-length in z)
                                                         0.,                // phi start
@@ -179,7 +179,7 @@ void create_actaf_geo(const char* geoTag = "v25")
 
     auto* cyl = new TGeoTube("Ring1_inner",
                              0,                  // rmin
-                             1.9,                // rmax
+                             1.19,                // rmax
                              anode_length / 2.); // dz (half-length in z)
 
     auto secinner1 = new TGeoVolume("Ring1_Pad13", cyl, pMed4);
@@ -205,6 +205,7 @@ void create_actaf_geo(const char* geoTag = "v25")
 
                 auto rot = new TGeoRotation();
                 rot->RotateZ(offset_phi[r] + s * 360. / nb_pads_ring[r]);
+                rot->RotateY(180);
 
                 Section->AddNode(section, 0, new TGeoCombiTrans(0., 0., -anode_length / 2. - 0.75, rot));
             }
@@ -231,6 +232,7 @@ void create_actaf_geo(const char* geoTag = "v25")
 
                 auto rot = new TGeoRotation();
                 rot->RotateZ(offset_phi[r] + s * 360. / nb_pads_ring[r]);
+                rot->RotateY(180);
                 rot->RotateX(180.);
 
                 Section->AddNode(section, 0, new TGeoCombiTrans(0., 0., anode_length / 2. + 0.75, rot));
