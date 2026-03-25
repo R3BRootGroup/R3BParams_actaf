@@ -128,6 +128,7 @@ void actaf_online(TString filename = "--stream=pcamtpc04:9003", const Int_t fRun
     // actafmap2cal->SetTimeConversion(51.44); // ns/bin
     // actafmap2cal->SetVelocity(0.28); // cm/ns
     actafmap2cal->SetOnline();
+    actafmap2cal->SetSGFilter();
     run->AddTask(actafmap2cal);
 
     auto* actafcal2hit = new R3BActafCal2Hit();
