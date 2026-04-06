@@ -94,12 +94,12 @@ void actaf_online(TString filename = "--stream=pcamtpc04:9003", const Int_t fRun
         actafreader->SetOnline();
         source->AddReader(actafreader);
 
-        
-	std::vector<UInt_t> wrIds {100, 200, 300, 400, 500, 600, 700, 800, 900};
-	
-	auto actafwrreader = new R3BWhiterabbitActafReader((EXT_STR_h101_WRACTAF_onion*)&ucesb_struct.actafwr, offsetof(EXT_STR_h101, actafwr), wrIds);
-	actafwrreader->SetOnline();
-	source->AddReader(actafwrreader);
+        std::vector<UInt_t> wrIds{ 100, 200, 300, 400, 500, 600, 700, 800, 900 };
+
+        auto actafwrreader = new R3BWhiterabbitActafReader(
+            (EXT_STR_h101_WRACTAF_onion*)&ucesb_struct.actafwr, offsetof(EXT_STR_h101, actafwr), wrIds);
+        actafwrreader->SetOnline();
+        source->AddReader(actafwrreader);
     }
 
     run->SetSource(source);

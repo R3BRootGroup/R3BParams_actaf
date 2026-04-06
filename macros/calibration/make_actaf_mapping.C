@@ -52,7 +52,7 @@ void make_actaf_mapping()
     for (int index = 0; index < 128; index++)
     {
         par->SetFADCModule(index, modval[index]);
-        par->SetFADCChannel(index, 17-chval[index]);
+        par->SetFADCChannel(index, 17 - chval[index]);
     }
 
     par->setChanged();
