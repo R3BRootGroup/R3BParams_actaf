@@ -179,7 +179,7 @@ void create_actaf_geo(const char* geoTag = "v25")
 
     auto* cyl = new TGeoTube("Ring1_inner",
                              0,                  // rmin
-                             1.19,                // rmax
+                             1.19,               // rmax
                              anode_length / 2.); // dz (half-length in z)
 
     auto secinner1 = new TGeoVolume("Ring1_Pad13", cyl, pMed4);
@@ -247,7 +247,6 @@ void create_actaf_geo(const char* geoTag = "v25")
     }
 
     pWorld->AddNode(Section, 1, t0);
-
 
     // ---------------   Finish   -----------------------------------------------
     gGeoMan->CloseGeometry();
