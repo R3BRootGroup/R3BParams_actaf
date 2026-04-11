@@ -14,7 +14,7 @@ typedef struct EXT_STR_h101_t
     EXT_STR_h101_WRACTAF_onion_t actafwr;
 } EXT_STR_h101;
 
-void actaf_online(TString filename = "--stream=pcamtpc04:9003", const Int_t fRunId = 1, const Int_t nev = -1)
+void actaf_online(TString filename = "--stream=pcamtpc04:9003", const Int_t nev = -1)
 {
     TStopwatch timer;
     timer.Start();
@@ -46,7 +46,7 @@ void actaf_online(TString filename = "--stream=pcamtpc04:9003", const Int_t fRun
     }
     std::cout << "Output Root file path: " << output_path << std::endl;
 
-    outputFilename = output_path + "/unpacked_data" + oss.str() + ".root";
+    outputFilename = output_path + "/online_data" + oss.str() + ".root";
     outputFilename.ReplaceAll("//", "/");
 
     // Path to UPEXPS   ---------------------------------------
@@ -97,7 +97,7 @@ void actaf_online(TString filename = "--stream=pcamtpc04:9003", const Int_t fRun
     }
 
     run->SetSource(source);
-    run->SetRunId(fRunId);
+    run->SetRunId(1);
     run->SetSink(new FairRootFileSink(outputFilename));
 
     // Runtime data base ------------------------------------
