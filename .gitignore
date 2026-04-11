@@ -6,3 +6,5 @@ core*
 *.lmd
 *allParams_*
 *all_*
+*.pdf
+*.png
