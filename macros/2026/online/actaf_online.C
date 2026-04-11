@@ -106,7 +106,7 @@ void actaf_online(TString filename = "--stream=pcamtpc04:9003", const Int_t fRun
     auto* parAscii = new FairParAsciiFileIo();
     auto* parListAscii = new TList();
     parListAscii->Add(new TObjString(pardir + "/fair/fair_v1.par"));
-    parListAscii->Add(new TObjString(pardir + "/actaf/actaf_mapping_v3.par"));
+    parListAscii->Add(new TObjString(pardir + "/actaf/actaf_mapping_v4.par"));
     parListAscii->Add(new TObjString(pardir + "/actaf/actafcal_v1.par"));
     parAscii->open(parListAscii);
     rtdb->setFirstInput(parAscii);
