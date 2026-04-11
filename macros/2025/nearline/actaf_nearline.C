@@ -99,19 +99,13 @@ void actaf_nearline(TString filename = "--stream=pcamtpc04:9003", const Int_t fR
 
     // Runtime data base ------------------------------------
     auto* rtdb = run->GetRuntimeDb();
-    auto* parRoot = new FairParRootFileIo(true);
+
     auto* parAscii = new FairParAsciiFileIo();
-
-    auto* parListRoot = new TList();
-    // parListRoot->Add(new TObjString(pardir + "/actaf/actaf_cal_v1.root"));
-    parRoot->open(parListRoot);
-    rtdb->setFirstInput(parRoot);
-
     auto* parListAscii = new TList();
     parListAscii->Add(new TObjString(pardir + "/actaf/actaf_mapping_v3.par"));
     parListAscii->Add(new TObjString(pardir + "/actaf/actafcal_v1.par"));
     parAscii->open(parListAscii);
-    rtdb->setSecondInput(parAscii);
+    rtdb->setFirstInput(parAscii);
     rtdb->print();
 
     // Create analysis task ------------------------------------------------------
