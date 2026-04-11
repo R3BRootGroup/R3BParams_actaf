@@ -10,7 +10,6 @@
 typedef struct EXT_STR_h101_t
 {
     EXT_STR_h101_unpack_t unpack;
-    // EXT_STR_h101_ACTAF2023_onion_t actaf;
     EXT_STR_h101_ACTAF2025_onion_t actaf;
     EXT_STR_h101_WRACTAF_onion_t actafwr;
 } EXT_STR_h101;
@@ -84,11 +83,6 @@ void actaf_online(TString filename = "--stream=pcamtpc04:9003", const Int_t fRun
 
     if (fActaf)
     {
-        // auto actafreader =
-        //     new R3BActafReader((EXT_STR_h101_ACTAF2023_onion
-        //     *)&ucesb_struct.actaf,
-        //                        offsetof(EXT_STR_h101, actaf));
-
         auto actafreader =
             new R3BActafReader((EXT_STR_h101_ACTAF2025_onion*)&ucesb_struct.actaf, offsetof(EXT_STR_h101, actaf));
         actafreader->SetOnline();
@@ -108,19 +102,14 @@ void actaf_online(TString filename = "--stream=pcamtpc04:9003", const Int_t fRun
 
     // Runtime data base ------------------------------------
     auto* rtdb = run->GetRuntimeDb();
-    auto* parRoot = new FairParRootFileIo(true);
+
     auto* parAscii = new FairParAsciiFileIo();
-
-    auto* parListRoot = new TList();
-    // parListRoot->Add(new TObjString(pardir + "/actaf/actaf_cal_v1.root"));
-    parRoot->open(parListRoot);
-    rtdb->setFirstInput(parRoot);
-
     auto* parListAscii = new TList();
+    parListAscii->Add(new TObjString(pardir + "/fair/fair_v1.par"));
     parListAscii->Add(new TObjString(pardir + "/actaf/actaf_mapping_v3.par"));
     parListAscii->Add(new TObjString(pardir + "/actaf/actafcal_v1.par"));
     parAscii->open(parListAscii);
-    rtdb->setSecondInput(parAscii);
+    rtdb->setFirstInput(parAscii);
     rtdb->print();
 
     // Create analysis task ------------------------------------------------------
