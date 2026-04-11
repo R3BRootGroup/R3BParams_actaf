@@ -15,7 +15,7 @@ void make_actaf_mapping()
     while (std::getline(infile, line))
     {
         if (line.empty() || line[0] == '#')
-            continue; // ignorar líneas vacías o comentarios
+            continue;
         std::istringstream iss(line);
         if (!(iss >> col1 >> col2 >> col3))
         {
@@ -49,10 +49,18 @@ void make_actaf_mapping()
 
     rtdb->addRun(1);
 
+    par->SetNBinsSample(2500);
+
     for (int index = 0; index < 128; index++)
     {
         par->SetFADCModule(index, modval[index]);
-        par->SetFADCChannel(index, 17 - chval[index]);
+        if (modval[index] % 2 == 0)
+            par->SetFADCChannel(index, chval[index]);
+        else
+            par->SetFADCChannel(index, 17 - chval[index]);
+
+        // if (modval[index] ==8 )std::cout<<chval[index]<<" "<<index+1<<std::endl;
+        // if (modval[index] ==1 )std::cout<<17-chval[index]<<" "<<index+1-64<<std::endl;
     }
 
     par->setChanged();
