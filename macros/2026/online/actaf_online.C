@@ -124,6 +124,10 @@ void actaf_online(TString filename = "--stream=pcamtpc04:9003", const Int_t nev 
     actafcal2hit->SetOnline();
     run->AddTask(actafcal2hit);
 
+    auto* actafhit2cluster = new R3BActafHit2Cluster();
+    actafhit2cluster->SetOnline();
+    run->AddTask(actafhit2cluster);
+
     auto* actafonline = new R3BActafOnlineSpectra();
     run->AddTask(actafonline);
 
