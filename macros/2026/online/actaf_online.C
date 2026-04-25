@@ -27,6 +27,8 @@ void actaf_online(const int fRunId = 1320, TString filename = "--stream=pcamtpc0
     std::ostringstream oss;
     oss << std::put_time(&tm, "%Y%m%d_%H%M%S");
 
+    TString runNumber = Form("%04d", fRunId);
+
     Bool_t fActaf = true;
 
     // NumSoiSci, file names and paths -----------------------------
@@ -46,7 +48,7 @@ void actaf_online(const int fRunId = 1320, TString filename = "--stream=pcamtpc0
     }
     std::cout << "Output Root file path: " << output_path << std::endl;
 
-    outputFilename = output_path + "/online_data" + oss.str() + ".root";
+    outputFilename = output_path + "/online_data_" + runNumber + "_" + oss.str() + ".root";
     outputFilename.ReplaceAll("//", "/");
 
     // Path to UPEXPS   ---------------------------------------
