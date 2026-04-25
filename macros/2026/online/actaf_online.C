@@ -14,7 +14,7 @@ typedef struct EXT_STR_h101_t
     EXT_STR_h101_WRACTAF_onion_t actafwr;
 } EXT_STR_h101;
 
-void actaf_online(TString filename = "--stream=pcamtpc04:9003", const Int_t nev = -1)
+void actaf_online(const int fRunId = 1320, TString filename = "--stream=pcamtpc04:9003", const Int_t nev = -1)
 {
     TStopwatch timer;
     timer.Start();
@@ -69,6 +69,9 @@ void actaf_online(TString filename = "--stream=pcamtpc04:9003", const Int_t nev 
     // Create online run ------------------------------------
     auto* EvntHeader = new R3BEventHeader();
     EvntHeader->SetExpId(fExpId);
+    EvntHeader->SetRunIdR3B(fRunId);
+    EvntHeader->SetInputFileId(1);
+    EvntHeader->SetParId(1);
     auto* run = new FairRunOnline();
     run->SetEventHeader(EvntHeader);
     run->ActivateHttpServer(refresh, online_port);
